@@ -9,32 +9,26 @@ const app = express();
 const path = require("path");
 require("dotenv").config();
 
-// Define the list of allowed origins
+// --- Zaroori Change Yahan Karen ---
+// Ab hum complex corsOptions ki jagah, seedha 'cors' function use karenge
+// taki preflight (OPTIONS) requests theek se handle ho saken.
+
 const allowedOrigins = [
   "http://localhost:3000",
   "https://def-fyp.netlify.app",
-  // --- YAHAN AAPKA NAYA VERCEL URL ADD KIYA GAYA HAI ---
-  "https://my-fyp-frontend.vercel.app",
-  // ----------------------------------------------------
+  "https://my-fyp-frontend.vercel.app", // Aapka Vercel Frontend URL
 ];
 
-// CORS configuration
-const corsOptions = {
-  origin: function (origin, callback) {
-    console.log("Incoming origin:", origin); // Log the incoming origin
-    // Agar origin defined nahi hai (jaise server se direct request), ya allowed list mein hai
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      console.warn("Rejected CORS origin:", origin); // Log the rejected origin
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true,
-};
-
-// Use the CORS middleware
-app.use(cors(corsOptions));
+// Use the CORS middleware with a direct configuration object
+app.use(
+  cors({
+    origin: allowedOrigins, // List of allowed origins
+    methods: ["GET", "POST", "PUT", "DELETE"], // Saare zaroori methods allow karein
+    credentials: true,
+    optionsSuccessStatus: 200, // Some older browsers default to 204
+  })
+);
+// --- Change End ---
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
